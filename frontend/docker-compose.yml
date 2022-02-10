@@ -1,0 +1,41 @@
+version: "3"
+services:
+  db:
+    image: "mysql:latest"
+    container_name: "mysql_compose"
+    ports:
+      - "3306:3306"
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=onlymusic
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - mysqlnetwork
+
+  backend:
+    image: "backend"
+    container_name: "backend_compose"
+    ports:
+      - "8080:8080"
+    networks:
+      - mysqlnetwork
+    depends_on:
+      - db
+  
+    restart: on-failure
+
+  frontend:
+    image: "frontendcontainer:latest"
+    container_name: "frontend_compose"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+
+volumes:
+  db-data:
+
+networks:
+  mysqlnetwork:  
